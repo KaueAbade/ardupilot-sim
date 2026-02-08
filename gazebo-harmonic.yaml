@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: gazebo-harmonic-pod
+  labels:
+    app: gazebo-harmonic-pod
+
+spec:
+  hostNetwork: true
+  volumes:
+  - name: xauthority
+    hostPath:
+      path: /run/user/1000/xauth_mfXDrs
+      type: File
+  - name: dri
+    hostPath:
+      path: /dev/dri
+      type: Directory
+
+  containers:
+  - name: main
+    image: ghcr.io/j-rivero/gazebo:harmonic-full
+    args: ["/usr/bin/gz", "sim", "-v4", "-r", "shapes.sdf"]
+    securityContext:
+      seLinuxOptions:
+        type: spc_t
+    env:
+    - name: DISPLAY
+      value: ":0"
+    - name: XAUTHORITY
+      value: "/tmp/xauth/xauth_mfXDrs"
+    volumeMounts:
+    - name: xauthority
+      mountPath: /tmp/xauth/xauth_mfXDrs
+      readOnly: true
