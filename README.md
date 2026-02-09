@@ -16,10 +16,8 @@ Dessa forma, é necessário fazer algumas coisas mais para a instalar no Fedora 
       cd ardupilot
       ```
     - Então _buildar_ a imager docker:
-      ```
-      Com interface gráfica: podman build . -t ardupilot --build-arg USER_UID=$(id -u) --build-arg USER_GID=$(id -g) --build-arg SKIP_AP_GRAPHIC_ENV=0
-      Ou sem: podman build . -t ardupilot --build-arg USER_UID=$(id -u) --build-arg USER_GID=$(id -g)
-      ```
+       - Com interface gráfica: ```podman build . -t ardupilot --build-arg USER_UID=$(id -u) --build-arg USER_GID=$(id -g) --build-arg SKIP_AP_GRAPHIC_ENV=0```
+       - Ou sem: ```podman build . -t ardupilot --build-arg USER_UID=$(id -u) --build-arg USER_GID=$(id -g)```
     - Depois, você pode executa-la:
       ```
       podman run --rm -it -v "$(pwd):/ardupilot" -u "$(id -u):$(id -g)" ardupilot:latest /ardupilot/Tools/autotest/sim_vehicle.py -v copter -f quad --console
