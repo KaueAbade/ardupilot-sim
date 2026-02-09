@@ -25,7 +25,9 @@ Dessa forma, é necessário fazer algumas coisas mais para a instalar no Fedora 
     - Ou executar o nosso _pod_ em _kubernete_ (bem mais legal):
       ```
       git clone https://github.com/Falcon-IFSP/drone-sim.git
+      (edite o arquivo ardupilot.yaml para que a variavel de ambiente XAUTHORITHY seja a mesma no container e no _host_)
       cd drone-sim
+      xhost +local:
       podman kube play --replace ardupilot.yaml
       ```
 
