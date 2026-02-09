@@ -9,13 +9,13 @@ Infelizmente a ferramenta utilizada apresenta tutorias de instalação apenas pa
 Dessa forma, é necessário fazer algumas coisas mais para a instalar no Fedora 43+ e, acredito eu, nas demais distribuições RHEL. 
 
  - Uma das possibilidades é utilizar um script de instalação reescrito para essas distribuições - [presente nas branches da Falcon do código fonte](https://github.com/Falcon-IFSP/ardupilot/blob/falcon-master/Tools/environment_install/install-prereqs-fedora.sh) - dessa forma basta seguir o passo-a-passo das outras distribuições substituindo o gerenciador de pacotes pelo [`dnf`](https://docs.fedoraproject.org/pt_BR/quick-docs/dnf-vs-apt/) e o script de instalação pelo nosso!
- - A outra é adaptar o setup em Docker para Podman, este é preferivel já que assim são evitados diversos problemas de compatibilidade e ambiente virtual:
+ - A outra é adaptar o setup em Docker para Podman, este é preferível já que assim são evitados diversos problemas de compatibilidade e ambiente virtual:
     - Esse setup também é bem mais simples, basta _clonar_ o nosso *clone* (😆) do Ardupilot:
       ```
       git clone --recurse-submodules https://github.com/Falcon-IFSP/ardupilot.git
       cd ardupilot
       ```
-    - Então _buildar_ a imager docker:
+    - Então _buildar_ a imagem docker:
        - Com interface gráfica: ```podman build . -t ardupilot --build-arg USER_UID=$(id -u) --build-arg USER_GID=$(id -g) --build-arg SKIP_AP_GRAPHIC_ENV=0```
        - Ou sem: ```podman build . -t ardupilot --build-arg USER_UID=$(id -u) --build-arg USER_GID=$(id -g)```
     - Depois, você pode executa-la:
@@ -30,4 +30,12 @@ Dessa forma, é necessário fazer algumas coisas mais para a instalar no Fedora 
       ```
 
 ## Gazebo Harmonic
-Lorem Ipsum
+Para se simular o cenário, os sensores e a fisica do nosso drone será utilizado o [Gazebo Harmonic](https://ardupilot.org/dev/docs/sitl-with-gazebo.html), versão mais atual do simulador Gazebo que é suportada pelo time do Ardupilot.
+> [!NOTE]
+> Diferentemente do Ardupilot SITL, esse simulador faz cálculos bem avançados além de demonstrações gráficas em 3D. Por esse motivo, é recomendado executá-lo utilizando uma _GPU_ dedicada e por meio do menor número de camadas de virtualização; utilizando _forwarding_, que seja.
+
+Para casos gerais, as informações de integração presentes no [blog do Ardupilot]([https://ardupilot.org/dev/docs/sitl-simulator-software-in-the-loop.html](https://ardupilot.org/dev/docs/sitl-with-gazebo.html)) são suficientes. Aqui serão descritos apenas os procedimentos realizados para operar o simulador em condições não descritas na documentação.
+
+### Setup em Fedora 43+ (RHEL)
+Infelizmente a ferramenta utilizada apresenta tutorias de instalação apenas para [Microsoft Windows](https://gazebosim.org/docs/harmonic/install_windows/), [macOS](https://gazebosim.org/docs/harmonic/install_osx/) e [Ubuntu](https://gazebosim.org/docs/harmonic/install_ubuntu/).
+Dessa forma, é necessário fazer algumas coisas mais para a instalar no Fedora 43+ e, acredito eu, nas demais distribuições RHEL. 
