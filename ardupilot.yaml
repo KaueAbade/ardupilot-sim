@@ -14,8 +14,8 @@ spec:
       type: Directory
   - name: xauthority
     hostPath:
-      path: /run/user/1000/xauth_mfXDrs
-      type: File
+      path: /run/user/1000
+      type: Directory
 
   containers:
   - name: sitl
@@ -29,10 +29,10 @@ spec:
     - name: DISPLAY
       value: ":0"
     - name: XAUTHORITY
-      value: "/tmp/xauth/xauth_mfXDrs"
+      value: "/tmp/xauth/xauth_npFEcA"
     volumeMounts:
     - name: ardupilot-source
       mountPath: /ardupilot:U,Z
     - name: xauthority
-      mountPath: /tmp/xauth/xauth_mfXDrs
+      mountPath: /tmp/xauth
       readOnly: true
