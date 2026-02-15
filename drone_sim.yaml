@@ -1,0 +1,63 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: drone-sim-config
+data:
+  DISPLAY: ":0"
+  XAUTHORITY: "/tmp/xauth/xauth_OwVQAW"
+  TZ: "America/Sao_Paulo"
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: drone-sim
+  labels:
+    app: drone-sim.pod
+    
+spec:
+  hostNetwork: true
+  containers:
+  - name: gazebo-harmonic
+    image: ghcr.io/j-rivero/gazebo:harmonic-full
+    args: ["/usr/bin/gz", "sim", "-v4", "-r", "shapes.sdf"]
+    resources:
+      limits:
+        amd.com/gpu: 1
+    securityContext:
+      allowPrivilegeEscalation: true
+      seLinuxOptions:
+        type: spc_t
+    envFrom:
+    - configMapRef:
+        name: drone-sim-config
+    volumeMounts:
+    - name: xauthority
+      mountPath: /tmp/xauth:Z
+      readOnly: true
+
+  - name: ardupilot-sitl
+    image: localhost/ardupilot:latest
+    args: ["/ardupilot/Tools/autotest/sim_vehicle.py", "-v", "copter", "-f", "quad", "--console"]
+    tty: true
+    securityContext:
+      seLinuxOptions:
+        type: spc_t
+    envFrom:
+    - configMapRef:
+        name: drone-sim-config
+    volumeMounts:
+    - name: ardupilot-source
+      mountPath: /ardupilot:U,Z
+    - name: xauthority
+      mountPath: /tmp/xauth:Z
+      readOnly: true
+
+  volumes:
+  - name: ardupilot-source
+    hostPath:
+      path: /opt/ardupilot
+      type: Directory
+  - name: xauthority
+    hostPath:
+      path: /run/user/1000
+      type: Directory
