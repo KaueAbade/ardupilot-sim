@@ -1,7 +1,7 @@
 FROM ghcr.io/j-rivero/gazebo:harmonic-full
 
 RUN apt-get update && apt-get upgrade -y && apt-get dist-upgrade -y && \
-    apt-get install -y libqt5svg5 libgz-sim8-dev rapidjson-dev libopencv-dev \
+    apt-get install -y git libqt5svg5 libgz-sim8-dev rapidjson-dev libopencv-dev \
     libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev gstreamer1.0-plugins-bad \
     gstreamer1.0-libav gstreamer1.0-gl
 
@@ -13,9 +13,9 @@ RUN curl -o /tmp/amdgpu-install_7.2.70200-1_all.deb \
 
 RUN amdgpu-install -y --usecase=graphics
 
-RUN mkdir -p gz_ws/src && cd gz_ws/src && git clone https://github.com/ArduPilot/ardupilot_gazebo 
-ENV GZ_SIM_SYSTEM_PLUGIN_PATH=$HOME/gz_ws/src/ardupilot_gazebo/build:$GZ_SIM_SYSTEM_PLUGIN_PATH \
-    GZ_SIM_RESOURCE_PATH=$HOME/gz_ws/src/ardupilot_gazebo/models:$HOME/gz_ws/src/ardupilot_gazebo/worlds:$GZ_SIM_RESOURCE_PATH
+RUN mkdir -p /opt/gz_ws/src && git clone https://github.com/ArduPilot/ardupilot_gazebo /opt/gz_ws/src
+ENV GZ_SIM_SYSTEM_PLUGIN_PATH=/opt/gz_ws/src/build:$GZ_SIM_SYSTEM_PLUGIN_PATH \
+    GZ_SIM_RESOURCE_PATH=/opt/gz_ws/src/models:/opt/gz_ws/src/worlds:$GZ_SIM_RESOURCE_PATH
 
 RUN apt-get autoremove -y && apt-get clean -y && \
     rm -rf /var/lib/apt/lists/*
