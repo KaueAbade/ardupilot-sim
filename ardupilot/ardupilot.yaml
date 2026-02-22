@@ -1,12 +1,39 @@
 apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ardupilot-config
+data:
+  DISPLAY: ":0"
+  XAUTHORITY: "/tmp/xauth/xauth_FkJMoe"
+  TZ: "America/Sao_Paulo"
+---
+apiVersion: v1
 kind: Pod
 metadata:
-  name: ardupilot-pod
+  name: ardupilot
   labels:
-    app: ardupilot-pod
+    app: ardupilot.pod
     
 spec:
   hostNetwork: true
+  containers:
+  - name: main
+    image: localhost/ardupilot:latest
+    args: ["/ardupilot/Tools/autotest/sim_vehicle.py", "-v", "copter", "-f", "quad", "--console"]
+    tty: true
+    securityContext:
+      seLinuxOptions:
+        type: spc_t
+    envFrom:
+    - configMapRef:
+        name: ardupilot-config
+    volumeMounts:
+    - name: ardupilot-source
+      mountPath: /ardupilot:U,Z
+    - name: xauthority
+      mountPath: /tmp/xauth:Z
+      readOnly: true
+
   volumes:
   - name: ardupilot-source
     hostPath:
@@ -16,23 +43,3 @@ spec:
     hostPath:
       path: /run/user/1000
       type: Directory
-
-  containers:
-  - name: sitl
-    image: localhost/ardupilot:latest
-    args: ["/ardupilot/Tools/autotest/sim_vehicle.py", "-v", "copter", "-f", "quad", "--console"]
-    tty: true
-    securityContext:
-      seLinuxOptions:
-        type: spc_t
-    env:
-    - name: DISPLAY
-      value: ":0"
-    - name: XAUTHORITY
-      value: "/tmp/xauth/xauth_npFEcA"
-    volumeMounts:
-    - name: ardupilot-source
-      mountPath: /ardupilot:U,Z
-    - name: xauthority
-      mountPath: /tmp/xauth
-      readOnly: true
