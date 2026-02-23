@@ -117,6 +117,7 @@ Dessa forma, é necessário fazer algumas coisas mais para a instalar no Fedora 
    podman kube play --replace gazebo-harmonic/amd/gazebo_harmonic.yaml
    ```
 
+
 Ao fim, o Gazebo deve abrir a sua janela principal.
 Se o interesse for observar stream de video por meio da câmera virtual do Gazebo, é nescessário executar o seguinte comando contra o contêiner:
 ```
