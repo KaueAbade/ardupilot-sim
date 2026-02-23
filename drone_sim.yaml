@@ -47,6 +47,9 @@ spec:
     tty: true
     ports:
     - containerPort: 5760
+    - containerPort: 5762
+    - containerPort: 5763
+    - containerPort: 9005
     resources:
       limits:
         amd.com/gpu: 1
