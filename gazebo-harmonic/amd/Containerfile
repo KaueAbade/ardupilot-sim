@@ -3,6 +3,7 @@ FROM ghcr.io/j-rivero/gazebo:harmonic-full
 RUN apt-get update && apt-get upgrade -y && apt-get dist-upgrade -y && \
     apt-get install -y git libqt5svg5 libgz-sim8-dev rapidjson-dev libopencv-dev \
     libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev gstreamer1.0-plugins-bad \
+    gstreamer1.0-plugins-good gstreamer1.0-plugins-ugly \
     gstreamer1.0-libav gstreamer1.0-gl libdebuginfod1
 
 
