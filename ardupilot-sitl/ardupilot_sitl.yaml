@@ -4,7 +4,8 @@ metadata:
   name: ardupilot-config
 data:
   DISPLAY: ":0"
-  XAUTHORITY: "/tmp/xauth/xauth_FkJMoe"
+  XAUTHORITY: "/run/user/1000/xauth_FkJMoe"
+  XDG_RUNTIME_DIR: "/run/user/1000"
   TZ: "America/Sao_Paulo"
 ---
 apiVersion: v1
@@ -23,10 +24,18 @@ spec:
     tty: true
     ports:
     - containerPort: 5760
+      protocol: TCP
+    - containerPort: 5762
+      protocol: TCP
+    - containerPort: 5763
+      protocol: TCP
+    - containerPort: 9005
+      protocol: UDP
     resources:
       limits:
         amd.com/gpu: 1
     securityContext:
+      allowPrivilegeEscalation: true
       seLinuxOptions:
         type: spc_t
     envFrom:
@@ -38,13 +47,19 @@ spec:
       readOnly: true
     - name: gpu-device
       mountPath: /dev/dri
+    - name: kfd-device
+      mountPath: /dev/kfd
 
   volumes:
-  - name: ardupilot-source
-    hostPath:
-      path: /opt/ardupilot
-      type: Directory
   - name: xauthority
     hostPath:
-      path: /run/user/1000
+      path: /run/user/1000/xauth_FkJMoe
+      type: File
+  - name: gpu-device
+    hostPath:
+      path: /dev/dri
+      type: Directory
+  - name: kfd-device
+    hostPath:
+      path: /dev/kfd
       type: Directory

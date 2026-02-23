@@ -24,6 +24,7 @@ spec:
     args: ["/usr/bin/gz", "sim", "-v4", "-r", "iris_runway.sdf"]
     ports:
     - containerPort: 5600
+      protocol: UDP
     resources:
       limits:
         amd.com/gpu: 1
@@ -40,6 +41,8 @@ spec:
       readOnly: true
     - name: gpu-device
       mountPath: /dev/dri
+    - name: kfd-device
+      mountPath: /dev/kfd
 
   - name: ardupilot-sitl
     image: localhost/ardupilot-sitl:latest
@@ -47,13 +50,18 @@ spec:
     tty: true
     ports:
     - containerPort: 5760
+      protocol: TCP
     - containerPort: 5762
+      protocol: TCP
     - containerPort: 5763
+      protocol: TCP
     - containerPort: 9005
+      protocol: UDP
     resources:
       limits:
         amd.com/gpu: 1
     securityContext:
+      allowPrivilegeEscalation: true
       seLinuxOptions:
         type: spc_t
     envFrom:
@@ -65,6 +73,8 @@ spec:
       readOnly: true
     - name: gpu-device
       mountPath: /dev/dri
+    - name: kfd-device
+      mountPath: /dev/kfd
 
   volumes:
   - name: xauthority
@@ -74,4 +84,8 @@ spec:
   - name: gpu-device
     hostPath:
       path: /dev/dri
+      type: Directory
+  - name: kfd-device
+    hostPath:
+      path: /dev/kfd
       type: Directory

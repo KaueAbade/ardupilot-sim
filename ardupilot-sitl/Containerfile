@@ -11,3 +11,5 @@ RUN /ardupilot/modules/waf/waf-light configure --board sitl && \
 
 RUN sudo apt-get autoremove -y && sudo apt-get clean && \
     sudo rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+EXPOSE 5760/tcp 5762/tcp 5763/tcp
