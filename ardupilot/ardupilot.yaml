@@ -18,9 +18,14 @@ spec:
   hostNetwork: true
   containers:
   - name: main
-    image: localhost/ardupilot:latest
-    args: ["/ardupilot/Tools/autotest/sim_vehicle.py", "-v", "copter", "-f", "quad", "--console"]
+    image: localhost/ardupilot-sitl:latest
+    args: ["/ardupilot/Tools/autotest/sim_vehicle.py", "-v", "ArduCopter", "-f", "gazebo-iris", "--model", "JSON", "--console"]
     tty: true
+    ports:
+    - containerPort: 5760
+    resources:
+      limits:
+        amd.com/gpu: 1
     securityContext:
       seLinuxOptions:
         type: spc_t
@@ -28,11 +33,11 @@ spec:
     - configMapRef:
         name: ardupilot-config
     volumeMounts:
-    - name: ardupilot-source
-      mountPath: /ardupilot:U,Z
     - name: xauthority
-      mountPath: /tmp/xauth:Z
+      mountPath: /run/user/1000/xauth_FkJMoe:Z
       readOnly: true
+    - name: gpu-device
+      mountPath: /dev/dri
 
   volumes:
   - name: ardupilot-source

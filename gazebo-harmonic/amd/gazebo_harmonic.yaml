@@ -21,6 +21,8 @@ spec:
   - name: main
     image: localhost/gazebo-harmonic-amd:latest
     args: ["/usr/bin/gz", "sim", "-v4", "-r", "iris_runway.sdf"]
+    ports:
+    - containerPort: 5600
     resources:
       limits:
         amd.com/gpu: 1
@@ -33,7 +35,7 @@ spec:
         name: gazebo-harmonic-config
     volumeMounts:
     - name: xauthority
-      mountPath: /tmp/xauth:Z
+      mountPath: /run/user/1000/xauth_FkJMoe:Z
       readOnly: true
     - name: gpu-device
       mountPath: /dev/dri
