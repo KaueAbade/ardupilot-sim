@@ -1,42 +1,5 @@
 # Simulação do Drone
 
-## Pré-requisitos do Sistema
-
-Antes de qualquer procedimento descrito neste documento, o sistema deve ter os seguintes pacotes instalados e configurados.
-
-### Git
-
-Necessário para clonar este repositório.
-
-```
-sudo dnf install git
-```
-
-### Make
-
-Utilizado para executar os atalhos de build definidos no `Makefile` do repositório.
-
-```
-sudo dnf install make
-```
-
-### Podman
-
-Todos os simuladores são executados em contêineres gerenciados pelo Podman. Instale-o com:
-
-```
-sudo dnf install podman
-```
-
-### xhost (para GUI via X11)
-
-O `xhost` é necessário para autorizar o acesso do contêiner ao servidor gráfico X11 do host, permitindo a exibição das interfaces dos simuladores. Ele faz parte do pacote `xorg-x11-server-utils`:
-
-```
-sudo dnf install xorg-x11-server-utils
-```
-
-
 ## Ardupilot SITL
 Para se simular o cérebro do drone será utilizado o simulador SITL que faz parte do ferramental disponibilizado no [código fonte](https://github.com/Falcon-IFSP/ardupilot) do [ArduPilot](https://ardupilot.org/dev/index.html).
 
@@ -62,10 +25,7 @@ Dessa forma, são necessárias etapas adicionais para instalá-la no Fedora 43+ 
       podman run --rm -it -u "$(id -u):$(id -g)" ardupilot-sitl:latest /ardupilot/Tools/autotest/sim_vehicle.py -v copter -f quad --console
       ```
     - Ou executar o nosso _pod_ em _Kubernetes_:
-      > [!NOTE]
       > Edite o arquivo `ardupilot-sitl/ardupilot_sitl.yaml` para que a variável de ambiente `XAUTHORITY` seja a mesma no container e no _host_ (obtenha o valor com `echo $XAUTHORITY`).
-      >
-      > `xhost +local:` concede a processos locais acesso ao servidor X11 do _host_, permitindo que a interface gráfica do contêiner seja exibida na tela. Execute-o antes de iniciar o _pod_.
       ```
       xhost +local:
       podman kube play --replace ardupilot-sitl/ardupilot_sitl.yaml
@@ -148,10 +108,7 @@ Dessa forma, são necessárias etapas adicionais para instalá-la no Fedora 43+ 
       podman run --rm -it --device /dev/kfd --device /dev/dri --net=host --security-opt=no-new-privileges --cap-drop=ALL gazebo-harmonic-amd:latest /usr/bin/gz sim -v4 -r shapes.sdf
       ```
     - Ou executar o nosso _pod_ em _Kubernetes_:
-      > [!NOTE]
       > Edite o arquivo `gazebo-harmonic/amd/gazebo_harmonic.yaml` para que a variável de ambiente `XAUTHORITY` seja a mesma no container e no _host_ (obtenha o valor com `echo $XAUTHORITY`).
-      >
-      > `xhost +local:` concede a processos locais acesso ao servidor X11 do _host_, permitindo que a interface gráfica do contêiner seja exibida na tela. Execute-o antes de iniciar o _pod_.
       ```
       xhost +local:
       podman kube play --replace gazebo-harmonic/amd/gazebo_harmonic.yaml
@@ -159,7 +116,7 @@ Dessa forma, são necessárias etapas adicionais para instalá-la no Fedora 43+ 
 
 
 Ao fim, o Gazebo deve abrir a sua janela principal.
-Se o interesse for observar stream de vídeo por meio da câmera virtual do Gazebo, é necessário executar o seguinte comando contra o contêiner:
+Se o interesse for observar stream de vídeo por meio da câmera virtual do Gazebo, é necessário executar o seguinte comando utilizando _bash_, dentro do contêiner:
 ```
 podman exec -ti drone-sim-gazebo-harmonic bash
 gz topic -t $(gz topic -l | grep -i "streaming") -m gz.msgs.Boolean -p "data: 1"
