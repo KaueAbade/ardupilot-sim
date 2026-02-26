@@ -257,14 +257,8 @@ mavproxy.py --master=tcp:127.0.0.1:5762
 
 ## Streaming de Vídeo (Câmera do Gazebo)
 
-Para ativar o streaming de vídeo da câmera virtual do Gazebo, execute dentro do contêiner:
-
-```bash
-podman exec -ti drone-sim-gazebo-harmonic bash
-gz topic -t $(gz topic -l | grep -i "streaming") -m gz.msgs.Boolean -p "data: 1"
-```
-
-A stream estará disponível na porta UDP `5600`.
+O streaming de video da câmera virtual do Gazebo é iniciado automaticamento pelo `make run` ou `make run-gazebo`
+A stream estará disponível na porta UDP `5600` no formato `h.264`.
 
 ---
 

@@ -34,11 +34,17 @@ run:
 	@echo "Usando USER_UID=${USER_UID}, XAUTHORITY=$(XAUTHORITY) e PWD=$(PWD)"
 	xhost +local:
 	USER_UID=${USER_UID} XAUTHORITY="$(XAUTHORITY)" PWD="$(PWD)" envsubst < drone_sim.yaml | podman kube play --replace -
+	podman exec drone-sim-gazebo-harmonic bash -c \
+      'until gz topic -l 2>/dev/null | grep -qi streaming; do sleep 1; done; \
+       gz topic -t $$(gz topic -l | grep -i "streaming") -m gz.msgs.Boolean -p "data: 1"'
 
 run-gazebo:
 	@echo "Usando USER_UID=${USER_UID}, XAUTHORITY=$(XAUTHORITY) e PWD=$(PWD)"
 	xhost +local:
 	USER_UID=${USER_UID} XAUTHORITY="$(XAUTHORITY)" PWD="$(PWD)" envsubst < gazebo-harmonic/amd/gazebo_harmonic.yaml | podman kube play --replace -
+	podman exec gazebo-harmonic-main bash -c \
+      'until gz topic -l 2>/dev/null | grep -qi streaming; do sleep 1; done; \
+       gz topic -t $$(gz topic -l | grep -i "streaming") -m gz.msgs.Boolean -p "data: 1"'
 
 run-ardupilot:
 	@echo "Usando USER_UID=${USER_UID}, XAUTHORITY=$(XAUTHORITY) e PWD=$(PWD)"
