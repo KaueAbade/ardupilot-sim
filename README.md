@@ -12,7 +12,6 @@ Ambiente containerizado com [Podman](https://podman.io/) para simulação de dro
 - [Personalização](#personalização)
 - [Estrutura do Projeto](#estrutura-do-projeto)
 - [Solução de Problemas](#solução-de-problemas)
-- [Referências](#referências)
 <!-- /TOC -->
 
 ---
