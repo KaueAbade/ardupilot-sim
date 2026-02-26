@@ -1,5 +1,6 @@
 .PHONY: build build-gazebo build-ardupilot run run-gazebo run-ardupilot stop help
 
+export PWD=$(CURDIR)
 export USER_UID=$(shell id -u)
 export USER_GID=$(shell id -g)
 export SKIP_AP_GRAPHIC_ENV=0
@@ -26,16 +27,16 @@ build-ardupilot:
 	podman build -t localhost/ardupilot-sitl:latest ardupilot-sitl/
 
 run:
-	@echo "Usando XAUTHORITY=$(XAUTHORITY)"
-	XAUTHORITY="$(XAUTHORITY)" envsubst < drone_sim.yaml | podman kube play --replace -
+	@echo "Usando XAUTHORITY=$(XAUTHORITY) e PWD=$(PWD)"
+	XAUTHORITY="$(XAUTHORITY)" PWD="$(PWD)" envsubst < drone_sim.yaml | podman kube play --replace -
 
 run-gazebo:
-	@echo "Usando XAUTHORITY=$(XAUTHORITY)"
-	XAUTHORITY="$(XAUTHORITY)" envsubst < gazebo-harmonic/amd/gazebo_harmonic.yaml | podman kube play --replace -
+	@echo "Usando XAUTHORITY=$(XAUTHORITY) e PWD=$(PWD)"
+	XAUTHORITY="$(XAUTHORITY)" PWD="$(PWD)" envsubst < gazebo-harmonic/amd/gazebo_harmonic.yaml | podman kube play --replace -
 
 run-ardupilot:
-	@echo "Usando XAUTHORITY=$(XAUTHORITY)"
-	XAUTHORITY="$(XAUTHORITY)" envsubst < ardupilot-sitl/ardupilot_sitl.yaml | podman kube play --replace -
+	@echo "Usando XAUTHORITY=$(XAUTHORITY) e PWD=$(PWD)"
+	XAUTHORITY="$(XAUTHORITY)" PWD="$(PWD)" envsubst < ardupilot-sitl/ardupilot_sitl.yaml | podman kube play --replace -
 
 stop:
 	-podman kube down drone_sim.yaml

@@ -36,6 +36,15 @@ spec:
     - configMapRef:
         name: gazebo-harmonic-config
     volumeMounts:
+    - name: gazebo-config
+      mountPath: /opt/gz_ws/config:Z
+      readOnly: true
+    - name: gazebo-models
+      mountPath: /opt/gz_ws/models:Z
+      readOnly: true
+    - name: gazebo-worlds
+      mountPath: /opt/gz_ws/worlds:Z
+      readOnly: true
     - name: xauthority
       mountPath: "${XAUTHORITY}:z"
       readOnly: true
@@ -45,6 +54,18 @@ spec:
       mountPath: /dev/kfd
 
   volumes:
+  - name: gazebo-config
+    hostPath:
+      path: "${PWD}/gazebo-harmonic/src/config"
+      type: Directory
+  - name: gazebo-models
+    hostPath:
+      path: "${PWD}/gazebo-harmonic/src/models"
+      type: Directory
+  - name: gazebo-worlds
+    hostPath:
+      path: "${PWD}/gazebo-harmonic/src/worlds"
+      type: Directory
   - name: xauthority
     hostPath:
       path: "${XAUTHORITY}"
