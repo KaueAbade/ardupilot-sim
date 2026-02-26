@@ -20,7 +20,7 @@ spec:
   containers:
   - name: main
     image: localhost/ardupilot-sitl:latest
-    args: ["/ardupilot/Tools/autotest/sim_vehicle.py", "-v", "ArduCopter", "-f", "gazebo-iris", "--model", "JSON", "--console"]
+    args: ["/ardupilot/Tools/autotest/sim_vehicle.py", "-v", "ArduCopter", "-f", "gazebo-iris", "--model", "JSON", "--console", "--no-rebuild"]
     tty: true
     ports:
     - containerPort: 5760

@@ -4,7 +4,7 @@ metadata:
   name: drone-sim-config
 data:
   DISPLAY: ":0"
-  XAUTHORITY: "/run/user/1000/xauth_FkJMoe"
+  XAUTHORITY: "/run/user/1000/xauth_bVAqUM"
   XDG_RUNTIME_DIR: "/run/user/1000"
   GZ_IP: "127.0.0.1"
   TZ: "America/Sao_Paulo"
@@ -37,7 +37,7 @@ spec:
         name: drone-sim-config
     volumeMounts:
     - name: xauthority
-      mountPath: /run/user/1000/xauth_FkJMoe:Z
+      mountPath: /run/user/1000/xauth_bVAqUM:z
       readOnly: true
     - name: gpu-device
       mountPath: /dev/dri
@@ -46,7 +46,7 @@ spec:
 
   - name: ardupilot-sitl
     image: localhost/ardupilot-sitl:latest
-    args: ["/ardupilot/Tools/autotest/sim_vehicle.py", "-v", "ArduCopter", "-f", "gazebo-iris", "--model", "JSON", "--console"]
+    args: ["/ardupilot/Tools/autotest/sim_vehicle.py", "-v", "ArduCopter", "-f", "gazebo-iris", "--model", "JSON", "--console", "--no-rebuild"]
     tty: true
     ports:
     - containerPort: 5760
@@ -69,7 +69,7 @@ spec:
         name: drone-sim-config
     volumeMounts:
     - name: xauthority
-      mountPath: /run/user/1000/xauth_FkJMoe:Z
+      mountPath: /run/user/1000/xauth_bVAqUM:z
       readOnly: true
     - name: gpu-device
       mountPath: /dev/dri
@@ -79,7 +79,7 @@ spec:
   volumes:
   - name: xauthority
     hostPath:
-      path: /run/user/1000/xauth_FkJMoe
+      path: /run/user/1000/xauth_bVAqUM
       type: File
   - name: gpu-device
     hostPath:
