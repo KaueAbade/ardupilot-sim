@@ -257,7 +257,8 @@ mavproxy.py --master=tcp:127.0.0.1:5762
 
 ## Streaming de Vídeo (Câmera do Gazebo)
 
-O streaming de video da câmera virtual do Gazebo é iniciado automaticamento pelo `make run` ou `make run-gazebo`
+O streaming de video da câmera virtual do Gazebo é iniciado automaticamento pelo `make run` ou `make run-gazebo`.
+
 A stream estará disponível na porta UDP `5600` no formato `h.264`.
 
 ---
