@@ -14,11 +14,11 @@ RUN curl -o /tmp/amdgpu-install_7.2.70200-1_all.deb \
 
 RUN amdgpu-install -y --usecase=graphics
 
-RUN mkdir -p /opt/gz_ws/src && git clone https://github.com/ArduPilot/ardupilot_gazebo /opt/gz_ws/src
+RUN mkdir -p /opt/gz_ws && git clone https://github.com/ArduPilot/ardupilot_gazebo /opt/gz_ws
 ENV GZ_VERSION=harmonic \
-    GZ_SIM_SYSTEM_PLUGIN_PATH=/opt/gz_ws/src/build:$GZ_SIM_SYSTEM_PLUGIN_PATH \
-    GZ_SIM_RESOURCE_PATH=/opt/gz_ws/src/models:/opt/gz_ws/src/worlds:$GZ_SIM_RESOURCE_PATH
-RUN cd /opt/gz_ws/src && mkdir build && cd /opt/gz_ws/src/build && \
+    GZ_SIM_SYSTEM_PLUGIN_PATH=/opt/gz_ws/build:$GZ_SIM_SYSTEM_PLUGIN_PATH \
+    GZ_SIM_RESOURCE_PATH=/opt/gz_ws/models:/opt/gz_ws/worlds:$GZ_SIM_RESOURCE_PATH
+RUN cd /opt/gz_ws && mkdir build && cd /opt/gz_ws/build && \
     cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo && make -j$(nproc)
 
 RUN apt-get autoremove -y && apt-get clean -y && \
