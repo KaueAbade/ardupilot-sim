@@ -2,6 +2,8 @@
 
 Ambiente containerizado com [Podman](https://podman.io/) para simulação de drones, integrando o controlador de voo [ArduPilot SITL](https://ardupilot.org/dev/docs/sitl-simulator-software-in-the-loop.html) com o simulador 3D [Gazebo Harmonic](https://gazebosim.org/docs/harmonic/). Desenvolvido para funcionar em **Fedora 43+ / RHEL** com GPUs AMD, sem a necessidade de instalar dependências diretamente no sistema operacional.
 
+![Exemplo do setup de simulação](images/setup_de_simulacao.png)
+
 <!-- TOC -->
 - [Visão Geral](#visão-geral)
 - [Pré-requisitos](#pré-requisitos)
