@@ -4,7 +4,7 @@ metadata:
   name: drone-sim-config
 data:
   DISPLAY: ":0"
-  XAUTHORITY: "/run/user/1000/xauth_bVAqUM"
+  XAUTHORITY: "${XAUTHORITY}"
   XDG_RUNTIME_DIR: "/run/user/1000"
   GZ_IP: "127.0.0.1"
   TZ: "America/Sao_Paulo"
@@ -37,7 +37,7 @@ spec:
         name: drone-sim-config
     volumeMounts:
     - name: xauthority
-      mountPath: /run/user/1000/xauth_bVAqUM:z
+      mountPath: "${XAUTHORITY}:z"
       readOnly: true
     - name: gpu-device
       mountPath: /dev/dri
@@ -57,11 +57,7 @@ spec:
       protocol: TCP
     - containerPort: 9005
       protocol: UDP
-    resources:
-      limits:
-        amd.com/gpu: 1
     securityContext:
-      allowPrivilegeEscalation: true
       seLinuxOptions:
         type: spc_t
     envFrom:
@@ -69,17 +65,13 @@ spec:
         name: drone-sim-config
     volumeMounts:
     - name: xauthority
-      mountPath: /run/user/1000/xauth_bVAqUM:z
+      mountPath: "${XAUTHORITY}:z"
       readOnly: true
-    - name: gpu-device
-      mountPath: /dev/dri
-    - name: kfd-device
-      mountPath: /dev/kfd
 
   volumes:
   - name: xauthority
     hostPath:
-      path: /run/user/1000/xauth_bVAqUM
+      path: "${XAUTHORITY}"
       type: File
   - name: gpu-device
     hostPath:

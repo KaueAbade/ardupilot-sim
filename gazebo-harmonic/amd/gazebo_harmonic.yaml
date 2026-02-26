@@ -4,7 +4,7 @@ metadata:
   name: gazebo-harmonic-config
 data:
   DISPLAY: ":0"
-  XAUTHORITY: "/run/user/1000/xauth_FkJMoe"
+  XAUTHORITY: "${XAUTHORITY}"
   XDG_RUNTIME_DIR: "/run/user/1000"
   GZ_IP: "127.0.0.1"
   TZ: "America/Sao_Paulo"
@@ -37,7 +37,7 @@ spec:
         name: gazebo-harmonic-config
     volumeMounts:
     - name: xauthority
-      mountPath: /run/user/1000/xauth_FkJMoe:Z
+      mountPath: "${XAUTHORITY}:z"
       readOnly: true
     - name: gpu-device
       mountPath: /dev/dri
@@ -47,7 +47,7 @@ spec:
   volumes:
   - name: xauthority
     hostPath:
-      path: /run/user/1000/xauth_FkJMoe
+      path: "${XAUTHORITY}"
       type: File
   - name: gpu-device
     hostPath:
