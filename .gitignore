@@ -1,1 +1,2 @@
-ardupilot/src/*
+ardupilot-sitl/src
+ardupilot-sitl/src/*
