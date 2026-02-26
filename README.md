@@ -21,8 +21,8 @@ Ambiente containerizado com [Podman](https://podman.io/) para simulação de dro
 O projeto executa dois contêineres dentro de um **Pod** Podman, que se comunicam via rede local (`hostNetwork`):
 
 ```
-┌─────────────────────────────── Pod (drone-sim) ───────────────────────────────┐
-│                                                                               │
+┌─────────────────────────────── Pod (drone-sim) ────────────────────────────────┐
+│                                                                                │
 │  ┌─────────────────────┐    UDP/JSON (9005)    ┌────────────────────────────┐  │
 │  │   ArduPilot SITL    │◄─────────────────────►│     Gazebo Harmonic        │  │
 │  │  (controlador de    │                       │  (física, sensores, 3D)    │  │
@@ -134,7 +134,7 @@ sudo reboot
 #### 2.3. Instalar pacotes ROCm
 
 ```bash
-sudo yum install rocm
+sudo dnf install rocm
 ```
 
 #### 2.4. Configurar SELinux para acesso aos dispositivos
@@ -167,7 +167,7 @@ make build
 Esse comando faz o download da seguinte imagem:
 - `gazebo:harmonic-full`  —  Gazebo Harmonic (Imagem da [comunidade](https://discourse.openrobotics.org/t/announcing-gazebo-open-container-images-docker-compatible-for-all-releases/51700))
 
-E estas três:
+E builda estas três:
 - `localhost/ardupilot:latest` — Ambiente de Desenvolvimento Ardupilot
 - `localhost/ardupilot-sitl:latest` — ArduPilot SITL (ArduCopter compilado para placa SITL)
 - `localhost/gazebo-harmonic-amd:latest` — Gazebo Harmonic com plugin [ardupilot_gazebo](https://github.com/ArduPilot/ardupilot_gazebo) e driver AMD
@@ -286,7 +286,7 @@ Para alterar o mundo, edite o argumento `args` no arquivo `drone_sim.yaml`:
 
 ```yaml
 args: ["/usr/bin/gz", "sim", "-v4", "-r", "iris_warehouse.sdf"]
-#                                          ^^^^^^^^^^^^^^^^^^^^^^
+                                          ^^^^^^^^^^^^^^^^^^^^
 ```
 
 ### Trocar o modelo do drone
@@ -319,7 +319,6 @@ drone-sim/
 ├── Makefile                  # Comandos de build, run e stop
 ├── drone_sim.yaml            # Pod Kubernetes: Gazebo + ArduPilot juntos
 ├── README.md
-│
 ├── ardupilot-sitl/
 │   ├── Containerfile         # Imagem final: compila ArduCopter sobre a base
 │   ├── ardupilot_sitl.yaml   # Pod Kubernetes: apenas ArduPilot
@@ -328,7 +327,6 @@ drone-sim/
 │       ├── Tools/            # Scripts de autotest e instalação
 │       ├── ArduCopter/       # Código do firmware do quadcopter
 │       └── ...
-│
 └── gazebo-harmonic/
     ├── amd/
     │   ├── Containerfile         # Imagem: Gazebo + driver AMD + plugin ArduPilot
