@@ -5,7 +5,7 @@ metadata:
 data:
   DISPLAY: ":0"
   XAUTHORITY: "${XAUTHORITY}"
-  XDG_RUNTIME_DIR: "/run/user/1000"
+  XDG_RUNTIME_DIR: "/run/user/${USER_UID}"
   TZ: "America/Sao_Paulo"
 ---
 apiVersion: v1

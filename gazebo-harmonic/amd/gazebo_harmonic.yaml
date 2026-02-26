@@ -5,7 +5,7 @@ metadata:
 data:
   DISPLAY: ":0"
   XAUTHORITY: "${XAUTHORITY}"
-  XDG_RUNTIME_DIR: "/run/user/1000"
+  XDG_RUNTIME_DIR: "/run/user/${USER_UID}"
   GZ_IP: "127.0.0.1"
   TZ: "America/Sao_Paulo"
 ---

@@ -22,21 +22,28 @@ build-gazebo:
 	podman build -t localhost/gazebo-harmonic-amd:latest gazebo-harmonic/amd/
 
 build-ardupilot:
-	if [ ! -d "ardupilot-sitl/src" ]; then git clone --recurse-submodules https://github.com/Falcon-IFSP/ardupilot.git ardupilot-sitl/src; fi
+	if [ ! -d "ardupilot-sitl/src" ]; then \
+		git clone --recurse-submodules https://github.com/Falcon-IFSP/ardupilot.git ardupilot-sitl/src; \
+	else \
+		git -C ardupilot-sitl/src pull --rebase; \
+	fi
 	podman build ardupilot-sitl/src -t ardupilot --build-arg USER_UID=${USER_UID} --build-arg USER_GID=${USER_GID} --build-arg SKIP_AP_GRAPHIC_ENV=${SKIP_AP_GRAPHIC_ENV}
 	podman build -t localhost/ardupilot-sitl:latest ardupilot-sitl/
 
 run:
-	@echo "Usando XAUTHORITY=$(XAUTHORITY) e PWD=$(PWD)"
-	XAUTHORITY="$(XAUTHORITY)" PWD="$(PWD)" envsubst < drone_sim.yaml | podman kube play --replace -
+	@echo "Usando USER_UID=${USER_UID}, XAUTHORITY=$(XAUTHORITY) e PWD=$(PWD)"
+	xhost +local:
+	USER_UID=${USER_UID} XAUTHORITY="$(XAUTHORITY)" PWD="$(PWD)" envsubst < drone_sim.yaml | podman kube play --replace -
 
 run-gazebo:
-	@echo "Usando XAUTHORITY=$(XAUTHORITY) e PWD=$(PWD)"
-	XAUTHORITY="$(XAUTHORITY)" PWD="$(PWD)" envsubst < gazebo-harmonic/amd/gazebo_harmonic.yaml | podman kube play --replace -
+	@echo "Usando USER_UID=${USER_UID}, XAUTHORITY=$(XAUTHORITY) e PWD=$(PWD)"
+	xhost +local:
+	USER_UID=${USER_UID} XAUTHORITY="$(XAUTHORITY)" PWD="$(PWD)" envsubst < gazebo-harmonic/amd/gazebo_harmonic.yaml | podman kube play --replace -
 
 run-ardupilot:
-	@echo "Usando XAUTHORITY=$(XAUTHORITY) e PWD=$(PWD)"
-	XAUTHORITY="$(XAUTHORITY)" PWD="$(PWD)" envsubst < ardupilot-sitl/ardupilot_sitl.yaml | podman kube play --replace -
+	@echo "Usando USER_UID=${USER_UID}, XAUTHORITY=$(XAUTHORITY) e PWD=$(PWD)"
+	xhost +local:
+	USER_UID=${USER_UID} XAUTHORITY="$(XAUTHORITY)" PWD="$(PWD)" envsubst < ardupilot-sitl/ardupilot_sitl.yaml | podman kube play --replace -
 
 stop:
 	-podman kube down drone_sim.yaml
