@@ -22,7 +22,7 @@ build-gazebo:
 	podman build -t localhost/gazebo-harmonic-amd:latest gazebo-harmonic/amd/
 
 build-ardupilot:
-	if [ ! -d "ardupilot-sitl/src" ]; then \
+	if [ ! -d "ardupilot-sitl/src/.git" ]; then \
 		git clone --recurse-submodules https://github.com/Falcon-IFSP/ardupilot.git ardupilot-sitl/src; \
 	else \
 		git -C ardupilot-sitl/src pull --rebase; \
