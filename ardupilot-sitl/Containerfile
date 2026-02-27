@@ -2,8 +2,7 @@ FROM localhost/ardupilot:latest
 
 ENV CCACHE_TEMPDIR=/tmp
 
-RUN sudo apt-get update && sudo apt-get upgrade -y && sudo apt-get dist-upgrade -y && \
-    sudo apt-get install -y git 
+RUN sudo apt-get update && sudo apt-get install -y git 
 
 COPY src/ /ardupilot 
 RUN /ardupilot/modules/waf/waf-light configure --board sitl && \
