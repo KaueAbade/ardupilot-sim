@@ -25,9 +25,6 @@ spec:
     ports:
     - containerPort: 5600
       protocol: UDP
-    resources:
-      limits:
-        amd.com/gpu: 1
     securityContext:
       allowPrivilegeEscalation: true
       seLinuxOptions:

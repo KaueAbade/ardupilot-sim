@@ -1,18 +1,9 @@
 FROM ghcr.io/j-rivero/gazebo:jetty-full
 
-ENV AMD_DRIVER_VERSION=30.30 \
-    AMD_DRIVER_RELEASE=7.2.70200-1_all
-
 RUN apt-get update && apt-get install -y libgz-sim10-dev rapidjson-dev libopencv-dev \
     libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev gstreamer1.0-plugins-bad \
     gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-gl \
-    git cmake build-essential lsb-release wget
-    
-RUN UBUNTU_VERSION=$(lsb_release --codename --short) && \
-    wget -qO /tmp/amdgpu-install.deb https://repo.radeon.com/amdgpu-install/${AMD_DRIVER_VERSION}/ubuntu/${UBUNTU_VERSION}/amdgpu-install_${AMD_DRIVER_RELEASE}.deb && \
-    apt-get install -y /tmp/amdgpu-install.deb
-
-RUN amdgpu-install -y --usecase=graphics
+    git cmake build-essential
 
 RUN mkdir -p /opt/gz_ws && git clone https://github.com/ArduPilot/ardupilot_gazebo /opt/gz_ws
 ENV GZ_VERSION=jetty \
