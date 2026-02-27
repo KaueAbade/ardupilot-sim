@@ -2,13 +2,10 @@ FROM localhost/ardupilot:latest
 
 ENV CCACHE_TEMPDIR=/tmp
 
-RUN sudo apt-get update && sudo apt-get install -y git 
-
 COPY src/ /ardupilot 
 RUN /ardupilot/modules/waf/waf-light configure --board sitl && \
     /ardupilot/modules/waf/waf-light build --target bin/arducopter
 
-RUN sudo apt-get autoremove -y && sudo apt-get clean && \
-    sudo rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN sudo rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 EXPOSE 5760/tcp 5762/tcp 5763/tcp
