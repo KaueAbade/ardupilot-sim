@@ -20,7 +20,7 @@ spec:
   hostNetwork: true
   containers:
   - name: gazebo-harmonic
-    image: localhost/gazebo-harmonic-amd:latest
+    image: localhost/gazebo-harmonic-ardupilot:latest
     args: ["/usr/bin/gz", "sim", "-v4", "-r", "iris_runway.sdf"]
     ports:
     - containerPort: 5600
