@@ -235,6 +235,7 @@ make stop
 | `make run-ardupilot` | Inicia apenas o ArduPilot SITL |
 | `make run-gazebo` | Inicia apenas o Gazebo Harmonic |
 | `make stop` | Para todos os pods da simulação |
+| `make clean` | Limpa todas as imagens geradas |
 
 ---
 

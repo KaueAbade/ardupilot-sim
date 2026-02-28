@@ -1,4 +1,4 @@
-.PHONY: build build-gazebo build-ardupilot run run-gazebo run-ardupilot stop help
+.PHONY: build build-gazebo build-ardupilot run run-gazebo run-ardupilot stop clean help
 
 export PWD=$(CURDIR)
 export USER_UID=$(shell id -u)
@@ -14,6 +14,7 @@ help:
 	@echo "  make run-gazebo      - Inicia apenas o Gazebo"
 	@echo "  make run-ardupilot   - Inicia apenas o ArduPilot SITL"
 	@echo "  make stop            - Para todos os pods da simulação"
+	@echo "  make clean           - Remove as imagens geradas"
 
 build: build-gazebo build-ardupilot
 	@echo "Todos os contêineres foram gerados com sucesso!"
@@ -49,4 +50,9 @@ run-ardupilot:
 stop:
 	-podman kube down drone_sim.yaml
 	-podman kube down gazebo-harmonic/gazebo_harmonic.yaml
-	-podman kube down ardupilot-sitl/ardupilot_sitl.yaml
+	-podman kube down ardupilot-sitl/ardupilot_sitl.
+	
+clean:
+	-podman rmi ghcr.io/falcon-ifsp/drone-sim/gazebo-harmonic-ardupilot:latest
+	-podman rmi ghcr.io/falcon-ifsp/drone-sim/ardupilot:latest
+	-podman rmi ghcr.io/falcon-ifsp/drone-sim/ardupilot-sitl:latest
