@@ -1,4 +1,4 @@
-.PHONY: build build-gazebo build-ardupilot run run-gazebo run-ardupilot stop clean help
+.PHONY: run run-gazebo run-ardupilot build build-gazebo build-ardupilot stop clean help
 
 export PWD=$(CURDIR)
 export USER_UID=$(shell id -u)
@@ -7,12 +7,12 @@ export SKIP_AP_GRAPHIC_ENV=0
 
 help:
 	@echo "Available targets:"
-	@echo "  make build           - Builda todos os contêineres"
-	@echo "  make build-gazebo    - Builda o contêiner do Gazebo Harmonic com plugins do ArduPilot"
-	@echo "  make build-ardupilot - Builda o contêiner do ArduPilot SITL"
 	@echo "  make run             - Inicia a simulação completa (Gazebo + ArduPilot)"
 	@echo "  make run-gazebo      - Inicia apenas o Gazebo"
 	@echo "  make run-ardupilot   - Inicia apenas o ArduPilot SITL"
+	@echo "  make build           - Builda todos os contêineres"
+	@echo "  make build-gazebo    - Builda o contêiner do Gazebo Harmonic com plugins do ArduPilot"
+	@echo "  make build-ardupilot - Builda o contêiner do ArduPilot SITL"
 	@echo "  make stop            - Para todos os pods da simulação"
 	@echo "  make clean           - Remove as imagens geradas"
 

@@ -228,12 +228,12 @@ make stop
 | Comando | Descrição |
 |---|---|
 | `make help` | Lista todos os comandos disponíveis |
-| `make build` | Builda todos os contêineres |
-| `make build-ardupilot` | Builda apenas o contêiner do ArduPilot SITL |
-| `make build-gazebo` | Builda apenas o contêiner do Gazebo Harmonic (AMD) |
 | `make run` | Inicia a simulação completa (Gazebo + ArduPilot) |
 | `make run-ardupilot` | Inicia apenas o ArduPilot SITL |
 | `make run-gazebo` | Inicia apenas o Gazebo Harmonic |
+| `make build` | Builda todos os contêineres |
+| `make build-ardupilot` | Builda apenas o contêiner do ArduPilot SITL |
+| `make build-gazebo` | Builda apenas o contêiner do Gazebo Harmonic (AMD) |
 | `make stop` | Para todos os pods da simulação |
 | `make clean` | Limpa todas as imagens geradas |
 
