@@ -47,8 +47,6 @@ spec:
       readOnly: true
     - name: gpu-device
       mountPath: /dev/dri
-    - name: kfd-device
-      mountPath: /dev/kfd
 
   - name: ardupilot-sitl
     image: localhost/ardupilot-sitl:latest

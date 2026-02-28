@@ -1,6 +1,6 @@
 # Simulação do Drone
 
-Ambiente containerizado com [Podman](https://podman.io/) para simulação de drones, integrando o controlador de voo [ArduPilot SITL](https://ardupilot.org/dev/docs/sitl-simulator-software-in-the-loop.html) com o simulador 3D [Gazebo Harmonic](https://gazebosim.org/docs/harmonic/). Desenvolvido para funcionar em **Fedora 43+ / RHEL** com GPUs AMD, sem a necessidade de instalar dependências diretamente no sistema operacional.
+Ambiente containerizado com [Podman](https://podman.io/) para simulação de drones, integrando o controlador de voo [ArduPilot SITL](https://ardupilot.org/dev/docs/sitl-simulator-software-in-the-loop.html) com o simulador 3D [Gazebo Harmonic](https://gazebosim.org/docs/harmonic/). Desenvolvido para funcionar em **Linux**, sem a necessidade de instalar dependências diretamente no sistema operacional.
 
 <!-- TOC -->
 - [Visão Geral](#visão-geral)
@@ -60,11 +60,10 @@ O projeto executa dois contêineres dentro de um **Pod** Podman, que se comunica
 ## Pré-requisitos
 
 ### Sistema Operacional
-- **Fedora 43+** ou outra distribuição baseada em **RHEL**
+- **Linux** ou **WSL** com passthrough de GPU
 
 ### Hardware
-- **GPU AMD dedicada** (necessária para o Gazebo Harmonic)
-  - A passagem da GPU para o contêiner utiliza os dispositivos `/dev/dri` e `/dev/kfd`
+- **GPU** (necessária para o Gazebo Harmonic, mesmo que integrada)
 
 ### Software
 
@@ -77,9 +76,15 @@ git --version       # Git
 envsubst --version  # gettext (para substituição de variáveis nos YAMLs)
 ```
 
-Para instalar no Fedora:
+Para instalar no Fedora/RHEL:
 ```bash
 sudo dnf install podman make git gettext
+```
+
+No Ubuntu/Debian:
+```bash
+sudo apt update
+sudo apt install podman make git gettext
 ```
 
 ---
@@ -93,12 +98,13 @@ git clone https://github.com/Falcon-IFSP/drone-sim.git
 cd drone-sim
 ```
 
-### 2. Configurar GPU AMD
+### 2. Configurar GPU
 
 > [!NOTE]
-> Esta etapa só precisa ser feita **uma vez** no sistema _host_. Se sua GPU AMD já está funcionando com contêineres, pule para o passo 3.
+> Esta etapa só precisa ser feita **uma vez** no sistema _host_. Se sua GPU já está funcionando com contêineres, pule para o passo 3.
 
-#### 2.1. Adicionar repositórios AMD
+#### 2.1. AMD
+##### 2.1.1 Adicionar repositórios AMD
 
 Conforme descrito no [site da AMD](https://rocm.docs.amd.com/projects/install-on-linux/en/latest/install/quick-start.html) (veja também: [Red Hat](https://access.redhat.com/solutions/7073764), [AMD CDI Guide](https://instinct.docs.amd.com/projects/container-toolkit/en/latest/container-runtime/cdi-guide.html)):
 
@@ -126,38 +132,46 @@ EOF
 sudo dnf clean all
 ```
 
-#### 2.2. Instalar driver e reiniciar
+#### 2.1.2. Instalar driver e reiniciar
 
 ```bash
 sudo dnf install amdgpu-dkms
 sudo reboot
 ```
 
-#### 2.3. Instalar pacotes ROCm
+#### 2.1.3. Instalar pacotes ROCm
 
 ```bash
 sudo dnf install rocm
 ```
 
-#### 2.4. Configurar SELinux para acesso aos dispositivos
+#### 2.1.4. Configurar SELinux para acesso aos dispositivos
 
 ```bash
 sudo setsebool -P container_use_devices 1
 ```
 
-#### 2.5. Instalar e executar o AMD Container Toolkit
+#### 2.1.5. Instalar e executar o AMD Container Toolkit
 
-```bash
+Em Fedora:
+``bash
 sudo dnf install amd-container-toolkit
 sudo amd-ctk cdi generate
 ```
 
-#### 2.6. Verificar
+Em Ubuntu:
+```bash
+sudo apt update
+sudo apt install amd-container-toolkit
+sudo amd-ctk cdi generate
+```
 
-Confirme que os dispositivos foram registrados:
+#### 2.1.6. Verificar
+
+Confirme que o dispositivo foi registrado:
 ```bash
 sudo amd-ctk cdi list
-ls -la /dev/dri /dev/kfd
+ls -la /dev/dri
 ```
 
 ### 3. Buildar as imagens
