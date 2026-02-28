@@ -22,11 +22,6 @@ build-gazebo:
 	podman build -t ghcr.io/falcon-ifsp/drone-sim/gazebo-harmonic-ardupilot:latest gazebo-harmonic
 
 build-ardupilot:
-	if [ ! -d "ardupilot-sitl/src/.github" ]; then \
-		git clone --recurse-submodules https://github.com/Falcon-IFSP/ardupilot.git ardupilot-sitl/src; \
-	else \
-		git -C ardupilot-sitl/src pull --rebase; \
-	fi
 	podman build ardupilot-sitl/src -t ghcr.io/falcon-ifsp/drone-sim/ardupilot:latest --build-arg USER_UID=${USER_UID} --build-arg USER_GID=${USER_GID} --build-arg SKIP_AP_GRAPHIC_ENV=${SKIP_AP_GRAPHIC_ENV}
 	podman build -t ghcr.io/falcon-ifsp/drone-sim/ardupilot-sitl:latest ardupilot-sitl/
 

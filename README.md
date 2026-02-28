@@ -175,7 +175,7 @@ ls -la /dev/dri
 ### Clonar o repositório
 
 ```bash
-git clone https://github.com/Falcon-IFSP/drone-sim.git
+git clone --recurse-submodules https://github.com/Falcon-IFSP/drone-sim.git
 cd drone-sim
 ```
 
@@ -314,7 +314,7 @@ Esses arquivos são montados no contêiner via volume e podem ser editados sem r
 ### Clonar o repositório
 
 ```bash
-git clone https://github.com/Falcon-IFSP/drone-sim.git
+git clone --recurse-submodules https://github.com/Falcon-IFSP/drone-sim.git
 cd drone-sim
 ```
 
