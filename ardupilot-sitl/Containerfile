@@ -2,9 +2,11 @@ FROM ghcr.io/falcon-ifsp/drone-sim/ardupilot:latest
 
 ENV CCACHE_TEMPDIR=/tmp
 
-COPY src/ /ardupilot 
-RUN /ardupilot/modules/waf/waf-light configure --board sitl && \
-    /ardupilot/modules/waf/waf-light build --target bin/arducopter
+COPY src/ /ardupilot
+RUN cd /ardupilot && git init && git config user.name "Drone Sim" && \
+    git config user.email "drone-sim@example.com" && git commit --allow-empty -m "build"
+RUN /ardupilot/modules/waf/waf-light configure --no-submodule-update --board sitl && \
+    /ardupilot/modules/waf/waf-light build --no-submodule-update --target bin/arducopter
 
 RUN sudo rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 

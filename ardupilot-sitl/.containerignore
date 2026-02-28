@@ -1,0 +1,10 @@
+# Docker context ignore list
+**/.azure
+**/.github
+**/.git
+**/.idea
+**/.vagrant
+
+# autotest directories
+test.*
+logs
