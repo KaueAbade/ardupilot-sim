@@ -1,0 +1,3 @@
+[submodule "ardupilot-sitl/src"]
+	path = ardupilot-sitl/src
+	url = https://github.com/Falcon-IFSP/ardupilot
