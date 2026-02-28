@@ -18,7 +18,7 @@ help:
 
 run:
 	@echo "Usando USER_UID=${USER_UID}, XAUTHORITY=$(XAUTHORITY) e PWD=$(PWD)"
-	@xhost +local:
+	@xhost +local: > /dev/null
 	@USER_UID=${USER_UID} XAUTHORITY="$(XAUTHORITY)" PWD="$(PWD)" envsubst < drone_sim.yaml | podman kube play --replace -
 	@podman exec drone-sim-gazebo-harmonic bash -c \
       'until gz topic -l 2>/dev/null | grep -qi streaming; do sleep 1; done; \
@@ -26,7 +26,7 @@ run:
 
 run-gazebo:
 	@echo "Usando USER_UID=${USER_UID}, XAUTHORITY=$(XAUTHORITY) e PWD=$(PWD)"
-	@xhost +local:
+	@xhost +local: > /dev/null
 	@USER_UID=${USER_UID} XAUTHORITY="$(XAUTHORITY)" PWD="$(PWD)" envsubst < gazebo-harmonic/gazebo_harmonic.yaml | podman kube play --replace -
 	@podman exec gazebo-harmonic-main bash -c \
       'until gz topic -l 2>/dev/null | grep -qi streaming; do sleep 1; done; \
