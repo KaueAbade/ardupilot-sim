@@ -172,7 +172,14 @@ ls -la /dev/dri
 
 ## Uso
 
-### Simulação completa (Gazebo + ArduPilot)
+### Clonar o repositório
+
+```bash
+git clone https://github.com/Falcon-IFSP/drone-sim.git
+cd drone-sim
+```
+
+### Iniciar a simulação completa (Gazebo + ArduPilot)
 
 Este é o modo principal. Inicia ambos os contêineres em um único Pod, com o ArduPilot conectado ao Gazebo:
 
