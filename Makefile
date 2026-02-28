@@ -16,36 +16,36 @@ help:
 	@echo "  make stop            - Para todos os pods da simulação"
 	@echo "  make clean           - Remove as imagens geradas"
 
-build: build-gazebo build-ardupilot
-	@echo "Todos os contêineres foram gerados com sucesso!"
-
-build-gazebo:
-	podman build -t ghcr.io/falcon-ifsp/drone-sim/gazebo-harmonic-ardupilot:latest gazebo-harmonic
-
-build-ardupilot:
-	podman build ardupilot-sitl/src -t ghcr.io/falcon-ifsp/drone-sim/ardupilot:latest --build-arg USER_UID=${USER_UID} --build-arg USER_GID=${USER_GID} --build-arg SKIP_AP_GRAPHIC_ENV=${SKIP_AP_GRAPHIC_ENV}
-	podman build -t ghcr.io/falcon-ifsp/drone-sim/ardupilot-sitl:latest ardupilot-sitl/
-
 run:
 	@echo "Usando USER_UID=${USER_UID}, XAUTHORITY=$(XAUTHORITY) e PWD=$(PWD)"
-	xhost +local:
-	USER_UID=${USER_UID} XAUTHORITY="$(XAUTHORITY)" PWD="$(PWD)" envsubst < drone_sim.yaml | podman kube play --replace -
-	podman exec drone-sim-gazebo-harmonic bash -c \
+	@xhost +local:
+	@USER_UID=${USER_UID} XAUTHORITY="$(XAUTHORITY)" PWD="$(PWD)" envsubst < drone_sim.yaml | podman kube play --replace -
+	@podman exec drone-sim-gazebo-harmonic bash -c \
       'until gz topic -l 2>/dev/null | grep -qi streaming; do sleep 1; done; \
        gz topic -t $$(gz topic -l | grep -i "streaming") -m gz.msgs.Boolean -p "data: 1"'
 
 run-gazebo:
 	@echo "Usando USER_UID=${USER_UID}, XAUTHORITY=$(XAUTHORITY) e PWD=$(PWD)"
-	xhost +local:
-	USER_UID=${USER_UID} XAUTHORITY="$(XAUTHORITY)" PWD="$(PWD)" envsubst < gazebo-harmonic/gazebo_harmonic.yaml | podman kube play --replace -
-	podman exec gazebo-harmonic-main bash -c \
+	@xhost +local:
+	@USER_UID=${USER_UID} XAUTHORITY="$(XAUTHORITY)" PWD="$(PWD)" envsubst < gazebo-harmonic/gazebo_harmonic.yaml | podman kube play --replace -
+	@podman exec gazebo-harmonic-main bash -c \
       'until gz topic -l 2>/dev/null | grep -qi streaming; do sleep 1; done; \
        gz topic -t $$(gz topic -l | grep -i "streaming") -m gz.msgs.Boolean -p "data: 1"'
 
 run-ardupilot:
 	@echo "Usando USER_UID=${USER_UID}, XAUTHORITY=$(XAUTHORITY) e PWD=$(PWD)"
-	xhost +local:
-	USER_UID=${USER_UID} XAUTHORITY="$(XAUTHORITY)" PWD="$(PWD)" envsubst < ardupilot-sitl/ardupilot_sitl.yaml | podman kube play --replace -
+	@xhost +local:
+	@USER_UID=${USER_UID} XAUTHORITY="$(XAUTHORITY)" PWD="$(PWD)" envsubst < ardupilot-sitl/ardupilot_sitl.yaml | podman kube play --replace -
+
+build: build-gazebo build-ardupilot
+	@echo "Todos os contêineres foram gerados com sucesso!"
+
+build-gazebo:
+	@podman build -t ghcr.io/falcon-ifsp/drone-sim/gazebo-harmonic-ardupilot:latest gazebo-harmonic
+
+build-ardupilot:
+	@podman build ardupilot-sitl/src -t ghcr.io/falcon-ifsp/drone-sim/ardupilot:latest --build-arg USER_UID=${USER_UID} --build-arg USER_GID=${USER_GID} --build-arg SKIP_AP_GRAPHIC_ENV=${SKIP_AP_GRAPHIC_ENV}
+	@podman build -t ghcr.io/falcon-ifsp/drone-sim/ardupilot-sitl:latest ardupilot-sitl/
 
 stop:
 	-podman kube down drone_sim.yaml
