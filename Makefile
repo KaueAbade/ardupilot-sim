@@ -50,7 +50,7 @@ run-ardupilot:
 stop:
 	-podman kube down drone_sim.yaml
 	-podman kube down gazebo-harmonic/gazebo_harmonic.yaml
-	-podman kube down ardupilot-sitl/ardupilot_sitl.
+	-podman kube down ardupilot-sitl/ardupilot_sitl.yaml
 	
 clean:
 	-podman rmi ghcr.io/falcon-ifsp/drone-sim/gazebo-harmonic-ardupilot:latest
