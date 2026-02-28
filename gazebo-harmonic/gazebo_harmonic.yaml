@@ -20,7 +20,7 @@ spec:
   hostNetwork: true
   containers:
   - name: main
-    image: localhost/gazebo-harmonic-ardupilot:latest
+    image: ghcr.io/falcon-ifsp/drone-sim/gazebo-harmonic-ardupilot:latest
     args: ["/usr/bin/gz", "sim", "-v4", "-r", "iris_runway.sdf"]
     ports:
     - containerPort: 5600

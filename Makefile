@@ -19,7 +19,7 @@ build: build-gazebo build-ardupilot
 	@echo "Todos os contêineres foram gerados com sucesso!"
 
 build-gazebo:
-	podman build -t localhost/gazebo-harmonic-ardupilot:latest gazebo-harmonic
+	podman build -t ghcr.io/falcon-ifsp/drone-sim/gazebo-harmonic-ardupilot:latest gazebo-harmonic
 
 build-ardupilot:
 	if [ ! -d "ardupilot-sitl/src/.github" ]; then \
@@ -27,8 +27,8 @@ build-ardupilot:
 	else \
 		git -C ardupilot-sitl/src pull --rebase; \
 	fi
-	podman build ardupilot-sitl/src -t ardupilot --build-arg USER_UID=${USER_UID} --build-arg USER_GID=${USER_GID} --build-arg SKIP_AP_GRAPHIC_ENV=${SKIP_AP_GRAPHIC_ENV}
-	podman build -t localhost/ardupilot-sitl:latest ardupilot-sitl/
+	podman build ardupilot-sitl/src -t ghcr.io/falcon-ifsp/drone-sim/ardupilot:latest --build-arg USER_UID=${USER_UID} --build-arg USER_GID=${USER_GID} --build-arg SKIP_AP_GRAPHIC_ENV=${SKIP_AP_GRAPHIC_ENV}
+	podman build -t ghcr.io/falcon-ifsp/drone-sim/ardupilot-sitl:latest ardupilot-sitl/
 
 run:
 	@echo "Usando USER_UID=${USER_UID}, XAUTHORITY=$(XAUTHORITY) e PWD=$(PWD)"

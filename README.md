@@ -10,6 +10,7 @@ Ambiente containerizado com [Podman](https://podman.io/) para simulação de dro
 - [Conectando um GCS Externo](#conectando-um-gcs-externo)
 - [Streaming de Vídeo](#streaming-de-vídeo-câmera-do-gazebo)
 - [Personalização](#personalização)
+- [Build](#build)
 - [Estrutura do Projeto](#estrutura-do-projeto)
 - [Solução de Problemas](#solução-de-problemas)
 <!-- /TOC -->
@@ -91,20 +92,13 @@ sudo apt install podman make git gettext
 
 ## Instalação Rápida
 
-### 1. Clonar o repositório
-
-```bash
-git clone https://github.com/Falcon-IFSP/drone-sim.git
-cd drone-sim
-```
-
-### 2. Configurar GPU
+### Configurar GPU
 
 > [!NOTE]
 > Esta etapa só precisa ser feita **uma vez** no sistema _host_. Se sua GPU já está funcionando com contêineres, pule para o passo 3.
 
-#### 2.1. AMD
-##### 2.1.1 Adicionar repositórios AMD
+#### AMD
+##### Adicionar repositórios AMD
 
 Conforme descrito no [site da AMD](https://rocm.docs.amd.com/projects/install-on-linux/en/latest/install/quick-start.html) (veja também: [Red Hat](https://access.redhat.com/solutions/7073764), [AMD CDI Guide](https://instinct.docs.amd.com/projects/container-toolkit/en/latest/container-runtime/cdi-guide.html)):
 
@@ -132,26 +126,26 @@ EOF
 sudo dnf clean all
 ```
 
-#### 2.1.2. Instalar driver e reiniciar
+#### Instalar driver e reiniciar
 
 ```bash
 sudo dnf install amdgpu-dkms
 sudo reboot
 ```
 
-#### 2.1.3. Instalar pacotes ROCm
+#### Instalar pacotes ROCm
 
 ```bash
 sudo dnf install rocm
 ```
 
-#### 2.1.4. Configurar SELinux para acesso aos dispositivos
+#### Configurar SELinux para acesso aos dispositivos
 
 ```bash
 sudo setsebool -P container_use_devices 1
 ```
 
-#### 2.1.5. Instalar e executar o AMD Container Toolkit
+#### Instalar e executar o AMD Container Toolkit
 
 Em Fedora:
 ``bash
@@ -166,30 +160,13 @@ sudo apt install amd-container-toolkit
 sudo amd-ctk cdi generate
 ```
 
-#### 2.1.6. Verificar
+#### Verificar
 
 Confirme que o dispositivo foi registrado:
 ```bash
 sudo amd-ctk cdi list
 ls -la /dev/dri
 ```
-
-### 3. Buildar as imagens
-
-```bash
-make build
-```
-
-Esse comando faz o download da seguinte imagem:
-- `gazebo:harmonic-full`  —  Gazebo Harmonic (Imagem da [comunidade](https://discourse.openrobotics.org/t/announcing-gazebo-open-container-images-docker-compatible-for-all-releases/51700))
-
-E builda estas três:
-- `localhost/ardupilot:latest` — Ambiente de Desenvolvimento Ardupilot
-- `localhost/ardupilot-sitl:latest` — ArduPilot SITL (ArduCopter compilado para placa SITL)
-- `localhost/gazebo-harmonic-amd:latest` — Gazebo Harmonic com plugin [ardupilot_gazebo](https://github.com/ArduPilot/ardupilot_gazebo) e driver AMD
-
-> [!NOTE]
-> O primeiro _build_ pode levar **30 minutos ou mais**, pois compila o ArduPilot, baixa o toolchain ARM e constrói o plugin do Gazebo. Builds seguintes utilizam cache do Podman e são muito mais rápidos.
 
 ---
 
@@ -202,6 +179,8 @@ Este é o modo principal. Inicia ambos os contêineres em um único Pod, com o A
 ```bash
 make run
 ```
+
+Este comando faz o download dos conteineres do nosso [repositório](https://github.com/orgs/Falcon-IFSP/packages)
 
 Você verá:
 - **Janela do Gazebo** com o ambiente 3D e o drone Iris na pista
@@ -320,6 +299,34 @@ Arquivos `.parm` ficam em `gazebo-harmonic/src/config/`:
 - `gazebo-iris-gimbal.parm` — Parâmetros do Iris com gimbal (tipo de frame, limites do gimbal, mapeamento RC)
 
 Esses arquivos são montados no contêiner via volume e podem ser editados sem rebuild.
+
+---
+
+## Build
+
+### Clonar o repositório
+
+```bash
+git clone https://github.com/Falcon-IFSP/drone-sim.git
+cd drone-sim
+```
+
+### Buildar as imagens
+
+```bash
+make build
+```
+
+Esse comando faz o download da seguinte imagem:
+- `gazebo:harmonic-full`  —  Gazebo Harmonic (Imagem da [comunidade](https://discourse.openrobotics.org/t/announcing-gazebo-open-container-images-docker-compatible-for-all-releases/51700))
+
+E builda estas três:
+- `localhost/ardupilot:latest` — Ambiente de Desenvolvimento Ardupilot
+- `localhost/ardupilot-sitl:latest` — ArduPilot SITL (ArduCopter compilado para placa SITL)
+- `localhost/gazebo-harmonic-amd:latest` — Gazebo Harmonic com plugin [ardupilot_gazebo](https://github.com/ArduPilot/ardupilot_gazebo) e driver AMD
+
+> [!NOTE]
+> O primeiro _build_ pode levar **30 minutos ou mais**, pois compila o ArduPilot, baixa o toolchain ARM e constrói o plugin do Gazebo. Builds seguintes utilizam cache do Podman e são muito mais rápidos.
 
 ---
 

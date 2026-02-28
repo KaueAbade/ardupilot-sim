@@ -1,4 +1,4 @@
-FROM localhost/ardupilot:latest
+FROM ghcr.io/falcon-ifsp/drone-sim/ardupilot:latest
 
 ENV CCACHE_TEMPDIR=/tmp
 

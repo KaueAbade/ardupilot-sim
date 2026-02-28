@@ -19,7 +19,7 @@ spec:
   hostNetwork: true
   containers:
   - name: main
-    image: localhost/ardupilot-sitl:latest
+    image: ghcr.io/falcon-ifsp/drone-sim/ardupilot-sitl:latest
     args: ["/ardupilot/Tools/autotest/sim_vehicle.py", "-v", "ArduCopter", "--console", "--no-rebuild"]
     tty: true
     ports:
