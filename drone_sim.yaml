@@ -34,7 +34,7 @@ spec:
         name: drone-sim-config
     volumeMounts:
     - name: gazebo-config
-      mountPath: /opt/gz_ws/config:Z
+      mountPath: /opt/gz_ws/config:z
       readOnly: true
     - name: gazebo-models
       mountPath: /opt/gz_ws/models:Z
@@ -50,7 +50,9 @@ spec:
 
   - name: ardupilot-sitl
     image: ghcr.io/falcon-ifsp/drone-sim/ardupilot-sitl:latest
-    args: ["/ardupilot/Tools/autotest/sim_vehicle.py", "-v", "ArduCopter", "-f", "gazebo-iris", "--model", "JSON", "--console", "--no-rebuild"]
+    args: ["/ardupilot/Tools/autotest/sim_vehicle.py", "-v", "ArduCopter", "-f", "gazebo-iris",
+       "--model", "JSON", "--add-param-file=/opt/gz_ws/config/gazebo-iris-gimbal-mavlink.parm",
+       "--console", "--no-rebuild"]
     tty: true
     ports:
     - containerPort: 5760
@@ -68,6 +70,9 @@ spec:
     - configMapRef:
         name: drone-sim-config
     volumeMounts:
+    - name: gazebo-config
+      mountPath: /opt/gz_ws/config:z
+      readOnly: true
     - name: xauthority
       mountPath: "${XAUTHORITY}:z"
       readOnly: true
