@@ -29,16 +29,16 @@ O projeto executa dois contêineres dentro de um **Pod** Podman, que se comunica
 │  ┌─────────────────────┐    UDP/JSON (9005)    ┌────────────────────────────┐  │
 │  │   ArduPilot SITL    │◄─────────────────────►│     Gazebo Harmonic        │  │
 │  │  (controlador de    │                       │  (física, sensores, 3D)    │  │
-│  │   voo simulado)     │                       │  GPU AMD (/dev/dri, /kfd)  │  │
+│  │   voo simulado)     │                       │      GPU (/dev/dri)        │  │
 │  └──────┬──────────────┘                       └──────────┬─────────────────┘  │
 │         │ TCP                                             │ UDP                │
 │         │ 5760, 5762, 5763                                │ 5600               │
 └─────────┼─────────────────────────────────────────────────┼────────────────────┘
           ▼                                                 ▼
     GCS Externo                                      Streaming de Vídeo
-    (Mission Planner,                                (GStreamer,
-    QGroundControl,                                  ffmplay,
-    MAVProxy)                                        OBS)
+    (Mission Planner,                                (GStreamer)
+    QGroundControl,
+    MAVProxy)
 ```
 
 | Componente | Descrição |
@@ -233,7 +233,7 @@ make stop
 | `make run-gazebo` | Inicia apenas o Gazebo Harmonic |
 | `make build` | Builda todos os contêineres |
 | `make build-ardupilot` | Builda apenas o contêiner do ArduPilot SITL |
-| `make build-gazebo` | Builda apenas o contêiner do Gazebo Harmonic (AMD) |
+| `make build-gazebo` | Builda apenas o contêiner do Gazebo Harmonic |
 | `make stop` | Para todos os pods da simulação |
 | `make clean` | Limpa todas as imagens geradas |
 
@@ -329,9 +329,9 @@ Esse comando faz o download da seguinte imagem:
 - `gazebo:harmonic-full`  —  Gazebo Harmonic (Imagem da [comunidade](https://discourse.openrobotics.org/t/announcing-gazebo-open-container-images-docker-compatible-for-all-releases/51700))
 
 E builda estas três:
-- `localhost/ardupilot:latest` — Ambiente de Desenvolvimento Ardupilot
-- `localhost/ardupilot-sitl:latest` — ArduPilot SITL (ArduCopter compilado para placa SITL)
-- `localhost/gazebo-harmonic-amd:latest` — Gazebo Harmonic com plugin [ardupilot_gazebo](https://github.com/ArduPilot/ardupilot_gazebo) e driver AMD
+- `ghcr.io/falcon-ifsp/drone-sim/ardupilot:latest` — Ambiente de Desenvolvimento Ardupilot
+- `ghcr.io/falcon-ifsp/drone-sim/ardupilot-sitl:latest` — ArduPilot SITL (ArduCopter compilado para placa SITL)
+- `ghcr.io/falcon-ifsp/drone-sim/gazebo-harmonic-ardupilot:latest` — Gazebo Harmonic com plugin [ardupilot_gazebo](https://github.com/ArduPilot/ardupilot_gazebo)
 
 > [!NOTE]
 > O primeiro _build_ pode levar **30 minutos ou mais**, pois compila o ArduPilot, baixa o toolchain ARM e constrói o plugin do Gazebo. Builds seguintes utilizam cache do Podman e são muito mais rápidos.
@@ -349,14 +349,13 @@ drone-sim/
 │   ├── Containerfile         # Imagem final: compila ArduCopter sobre a base
 │   ├── ardupilot_sitl.yaml   # Pod Kubernetes: apenas ArduPilot
 │   └── src/                  # Clone do ArduPilot (gerado no build)
-│       ├── Dockerfile        # Imagem base: Ubuntu 22.04 + dependências
+│       ├── Dockerfile        # Imagem base: Ubuntu 24.04 + dependências
 │       ├── Tools/            # Scripts de autotest e instalação
 │       ├── ArduCopter/       # Código do firmware do quadcopter
 │       └── ...
 └── gazebo-harmonic/
-    ├── amd/
-    │   ├── Containerfile         # Imagem: Gazebo + driver AMD + plugin ArduPilot
-    │   └── gazebo_harmonic.yaml  # Pod Kubernetes: apenas Gazebo
+    ├── Containerfile         # Imagem: Gazebo + plugin ArduPilot
+    └── gazebo_harmonic.yaml  # Pod Kubernetes: apenas Gazebo
     └── src/
         ├── config/               # Arquivos .parm do ArduPilot
         ├── models/               # Modelos SDF (Iris, Zephyr, gimbals, pista)
@@ -371,7 +370,6 @@ drone-sim/
 |---|---|---|
 | **Gazebo abre mas tela preta** | XAUTHORITY incorreto no contêiner | Verifique com `echo $XAUTHORITY` — o valor deve existir como arquivo |
 | **ArduPilot não conecta ao Gazebo** | Gazebo ainda não iniciou ou `GZ_IP` incorreto | Aguarde o Gazebo carregar completamente; verifique que `GZ_IP=127.0.0.1` está no ConfigMap |
-| **Sem aceleração GPU / renderização lenta / tela preta no Gazebo** | Driver AMD não instalado ou CDI não gerado | Execute `sudo amd-ctk cdi generate` e verifique com `amd-ctk cdi list` |
 | **Permissão negada em `/dev/dri` ou `/dev/kfd`** | SELinux bloqueando acesso ao dispositivo | Execute `sudo setsebool -P container_use_devices 1` ou verifique o `sudo journalctl --no-pager -xeu setroubleshootd` |
 | **Build do ArduPilot falha** | Submodules do git não baixados | Delete `ardupilot-sitl/src/` e execute `make build-ardupilot` novamente |
 | **GCS não conecta na porta 5760** | Pod não está rodando ou firewall bloqueando | Verifique com `podman pod ps` e `ss -tlnp \| grep 5762` |
