@@ -69,7 +69,3 @@ spec:
     hostPath:
       path: /dev/dri
       type: Directory
-  - name: kfd-device
-    hostPath:
-      path: /dev/kfd
-      type: Directory
