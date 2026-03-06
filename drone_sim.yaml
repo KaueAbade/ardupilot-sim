@@ -51,7 +51,7 @@ spec:
   - name: ardupilot-sitl
     image: ghcr.io/falcon-ifsp/drone-sim/ardupilot-sitl:latest
     args: ["/ardupilot/Tools/autotest/sim_vehicle.py", "-v", "ArduCopter", "-f", "gazebo-iris",
-       "--model", "JSON", "--add-param-file=/opt/gz_ws/config/gazebo-iris-gimbal-mavlink.parm",
+       "--model", "JSON", "--add-param-file=/opt/gz_ws/config/gazebo-iris-gimbal.parm",
        "--console", "--no-rebuild"]
     tty: true
     ports:
