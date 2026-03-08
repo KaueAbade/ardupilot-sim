@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: gazebo-harmonic-config
 data:
-  DISPLAY: ":0"
+  DISPLAY: "${DISPLAY}"
   XAUTHORITY: "${XAUTHORITY}"
   XDG_RUNTIME_DIR: "/run/user/${USER_UID}"
   GZ_IP: "127.0.0.1"

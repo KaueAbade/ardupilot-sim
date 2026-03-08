@@ -17,25 +17,25 @@ help:
 	@echo "  make clean           - Remove as imagens geradas"
 
 run:
-	@echo "Usando USER_UID=${USER_UID}, XAUTHORITY=$(XAUTHORITY) e PWD=$(PWD)"
+	@echo "Usando USER_UID=${USER_UID}, DISPLAY=$(DISPLAY), XAUTHORITY=$(XAUTHORITY) e PWD=$(PWD)"
 	@xhost +local: > /dev/null
-	@USER_UID=${USER_UID} XAUTHORITY="$(XAUTHORITY)" PWD="$(PWD)" envsubst < drone_sim.yaml | podman kube play --replace -
+	@USER_UID=${USER_UID} DISPLAY="$(DISPLAY)" XAUTHORITY="$(XAUTHORITY)" PWD="$(PWD)" envsubst < drone_sim.yaml | podman kube play --replace -
 	@podman exec drone-sim-gazebo-harmonic bash -c \
       'until gz topic -l 2>/dev/null | grep -qi streaming; do sleep 1; done; \
        gz topic -t $$(gz topic -l | grep -i "streaming") -m gz.msgs.Boolean -p "data: 1"'
 
 run-gazebo:
-	@echo "Usando USER_UID=${USER_UID}, XAUTHORITY=$(XAUTHORITY) e PWD=$(PWD)"
+	@echo "Usando USER_UID=${USER_UID}, DISPLAY=$(DISPLAY), XAUTHORITY=$(XAUTHORITY) e PWD=$(PWD)"
 	@xhost +local: > /dev/null
-	@USER_UID=${USER_UID} XAUTHORITY="$(XAUTHORITY)" PWD="$(PWD)" envsubst < gazebo-harmonic/gazebo_harmonic.yaml | podman kube play --replace -
+	@USER_UID=${USER_UID} DISPLAY="$(DISPLAY)" XAUTHORITY="$(XAUTHORITY)" PWD="$(PWD)" envsubst < gazebo-harmonic/gazebo_harmonic.yaml | podman kube play --replace -
 	@podman exec gazebo-harmonic-main bash -c \
       'until gz topic -l 2>/dev/null | grep -qi streaming; do sleep 1; done; \
        gz topic -t $$(gz topic -l | grep -i "streaming") -m gz.msgs.Boolean -p "data: 1"'
 
 run-ardupilot:
-	@echo "Usando USER_UID=${USER_UID}, XAUTHORITY=$(XAUTHORITY) e PWD=$(PWD)"
+	@echo "Usando USER_UID=${USER_UID}, DISPLAY=$(DISPLAY), XAUTHORITY=$(XAUTHORITY) e PWD=$(PWD)"
 	@xhost +local:
-	@USER_UID=${USER_UID} XAUTHORITY="$(XAUTHORITY)" PWD="$(PWD)" envsubst < ardupilot-sitl/ardupilot_sitl.yaml | podman kube play --replace -
+	@USER_UID=${USER_UID} DISPLAY="$(DISPLAY)" XAUTHORITY="$(XAUTHORITY)" PWD="$(PWD)" envsubst < ardupilot-sitl/ardupilot_sitl.yaml | podman kube play --replace -
 
 build: build-gazebo build-ardupilot
 	@echo "Todos os contêineres foram gerados com sucesso!"
