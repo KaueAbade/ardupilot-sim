@@ -1,6 +1,6 @@
 # Simulação do Drone
 
-Ambiente containerizado com [Podman](https://podman.io/) para simulação de drones, integrando o controlador de voo [ArduPilot SITL](https://ardupilot.org/dev/docs/sitl-simulator-software-in-the-loop.html) com o simulador 3D [Gazebo Harmonic](https://gazebosim.org/docs/harmonic/). Desenvolvido para funcionar em **Linux**, sem a necessidade de instalar dependências diretamente no sistema operacional.
+Ambiente containerizado com [Podman](https://podman.io/) para simulação de drones, integrando o controlador de voo [ArduPilot SITL](https://ardupilot.org/dev/docs/sitl-simulator-software-in-the-loop.html) com o simulador 3D [Gazebo Harmonic](https://gazebosim.org/docs/harmonic/). Desenvolvido para funcionar em **Linux**, testado em ambientes **Fedora**.
 
 <!-- TOC -->
 - [Visão Geral](#visão-geral)
@@ -21,10 +21,10 @@ Ambiente containerizado com [Podman](https://podman.io/) para simulação de dro
 
 ## Visão Geral
 
-O projeto executa dois contêineres dentro de um **Pod** Podman, que se comunicam via rede local (`hostNetwork`):
+O projeto executa dois contêineres dentro de um **Pod**:
 
 ```
-┌─────────────────────────────── Pod (drone-sim) ────────────────────────────────┐
+┌─────────────────────────────── Pod (ardupilot-sim) ────────────────────────────────┐
 │                                                                                │
 │  ┌─────────────────────┐    UDP/JSON (9005)    ┌────────────────────────────┐  │
 │  │   ArduPilot SITL    │◄─────────────────────►│     Gazebo Harmonic        │  │
@@ -90,93 +90,13 @@ sudo apt install podman make git gettext
 
 ---
 
-## Instalação Rápida
-
-### Configurar GPU
-
-> [!NOTE]
-> Esta etapa só precisa ser feita **uma vez** no sistema _host_. Se sua GPU já está funcionando com contêineres, pule para o passo 3.
-
-#### AMD
-##### Adicionar repositórios AMD
-
-Conforme descrito no [site da AMD](https://rocm.docs.amd.com/projects/install-on-linux/en/latest/install/quick-start.html) (veja também: [Red Hat](https://access.redhat.com/solutions/7073764), [AMD CDI Guide](https://instinct.docs.amd.com/projects/container-toolkit/en/latest/container-runtime/cdi-guide.html)):
-
-```bash
-sudo tee /etc/yum.repos.d/amdgpu.repo <<EOF
-[amdgpu]
-name=amdgpu
-baseurl=https://repo.radeon.com/amdgpu/6.1.2/rhel/9.4/main/x86_64/
-enabled=1
-priority=50
-gpgcheck=1
-gpgkey=https://repo.radeon.com/rocm/rocm.gpg.key
-EOF
-
-sudo tee --append /etc/yum.repos.d/rocm.repo <<EOF
-[ROCm-6.1.2]
-name=ROCm6.1.2
-baseurl=https://repo.radeon.com/rocm/rhel9/6.1.2/main
-enabled=1
-priority=50
-gpgcheck=1
-gpgkey=https://repo.radeon.com/rocm/rocm.gpg.key
-EOF
-
-sudo dnf clean all
-```
-
-#### Instalar driver e reiniciar
-
-```bash
-sudo dnf install amdgpu-dkms
-sudo reboot
-```
-
-#### Instalar pacotes ROCm
-
-```bash
-sudo dnf install rocm
-```
-
-#### Configurar SELinux para acesso aos dispositivos
-
-```bash
-sudo setsebool -P container_use_devices 1
-```
-
-#### Instalar e executar o AMD Container Toolkit
-
-Em Fedora:
-``bash
-sudo dnf install amd-container-toolkit
-sudo amd-ctk cdi generate
-```
-
-Em Ubuntu:
-```bash
-sudo apt update
-sudo apt install amd-container-toolkit
-sudo amd-ctk cdi generate
-```
-
-#### Verificar
-
-Confirme que o dispositivo foi registrado:
-```bash
-sudo amd-ctk cdi list
-ls -la /dev/dri
-```
-
----
-
 ## Uso
 
 ### Clonar o repositório
 
 ```bash
-git clone --recurse-submodules https://github.com/Falcon-IFSP/drone-sim.git
-cd drone-sim
+git clone --recurse-submodules https://github.com/KaueAbade/ardupilot-sim.git
+cd ardupilot-sim
 ```
 
 ### Iniciar a simulação completa (Gazebo + ArduPilot)
@@ -187,7 +107,7 @@ Este é o modo principal. Inicia ambos os contêineres em um único Pod, com o A
 make run
 ```
 
-Este comando faz o download dos conteineres do nosso [repositório](https://github.com/orgs/Falcon-IFSP/packages)
+Este comando faz o download dos conteineres do [repositório](https://github.com/orgs/KaueAbade/packages)
 
 Você verá:
 - **Janela do Gazebo** com o ambiente 3D e o drone Iris na pista
@@ -315,8 +235,8 @@ Esses arquivos são montados no contêiner via volume e podem ser editados sem r
 ### Clonar o repositório
 
 ```bash
-git clone --recurse-submodules https://github.com/Falcon-IFSP/drone-sim.git
-cd drone-sim
+git clone --recurse-submodules https://github.com/KaueAbade/ardupilot-sim.git
+cd ardupilot-sim
 ```
 
 ### Buildar as imagens
@@ -329,61 +249,9 @@ Esse comando faz o download da seguinte imagem:
 - `gazebo:harmonic-full`  —  Gazebo Harmonic (Imagem da [comunidade](https://discourse.openrobotics.org/t/announcing-gazebo-open-container-images-docker-compatible-for-all-releases/51700))
 
 E builda estas três:
-- `ghcr.io/falcon-ifsp/drone-sim/ardupilot:latest` — Ambiente de Desenvolvimento Ardupilot
-- `ghcr.io/falcon-ifsp/drone-sim/ardupilot-sitl:latest` — ArduPilot SITL (ArduCopter compilado para placa SITL)
-- `ghcr.io/falcon-ifsp/drone-sim/gazebo-harmonic-ardupilot:latest` — Gazebo Harmonic com plugin [ardupilot_gazebo](https://github.com/ArduPilot/ardupilot_gazebo)
+- `ghcr.io/KaueAbade/ardupilot-sim/ardupilot:latest` — Ambiente de Desenvolvimento Ardupilot
+- `ghcr.io/KaueAbade/ardupilot-sim/ardupilot-sitl:latest` — ArduPilot SITL (ArduCopter compilado para placa SITL)
+- `ghcr.io/KaueAbade/ardupilot-sim/gazebo-harmonic-ardupilot:latest` — Gazebo Harmonic com plugin [ardupilot_gazebo](https://github.com/ArduPilot/ardupilot_gazebo)
 
 > [!NOTE]
-> O primeiro _build_ pode levar **30 minutos ou mais**, pois compila o ArduPilot, baixa o toolchain ARM e constrói o plugin do Gazebo. Builds seguintes utilizam cache do Podman e são muito mais rápidos.
-
----
-
-## Estrutura do Projeto
-
-```
-drone-sim/
-├── Makefile                  # Comandos de build, run e stop
-├── drone_sim.yaml            # Pod Kubernetes: Gazebo + ArduPilot juntos
-├── README.md
-├── ardupilot-sitl/
-│   ├── Containerfile         # Imagem final: compila ArduCopter sobre a base
-│   ├── ardupilot_sitl.yaml   # Pod Kubernetes: apenas ArduPilot
-│   └── src/                  # Clone do ArduPilot (gerado no build)
-│       ├── Dockerfile        # Imagem base: Ubuntu 24.04 + dependências
-│       ├── Tools/            # Scripts de autotest e instalação
-│       ├── ArduCopter/       # Código do firmware do quadcopter
-│       └── ...
-└── gazebo-harmonic/
-    ├── Containerfile         # Imagem: Gazebo + plugin ArduPilot
-    └── gazebo_harmonic.yaml  # Pod Kubernetes: apenas Gazebo
-    └── src/
-        ├── config/               # Arquivos .parm do ArduPilot
-        ├── models/               # Modelos SDF (Iris, Zephyr, gimbals, pista)
-        └── worlds/               # Cenários SDF (iris_runway, warehouse, etc.)
-```
-
----
-
-## Solução de Problemas
-
-| Sintoma | Causa Provável | Solução |
-|---|---|---|
-| **Gazebo abre mas tela preta** | XAUTHORITY incorreto no contêiner | Verifique com `echo $XAUTHORITY` — o valor deve existir como arquivo |
-| **ArduPilot não conecta ao Gazebo** | Gazebo ainda não iniciou ou `GZ_IP` incorreto | Aguarde o Gazebo carregar completamente; verifique que `GZ_IP=127.0.0.1` está no ConfigMap |
-| **Permissão negada em `/dev/dri` ou `/dev/kfd`** | SELinux bloqueando acesso ao dispositivo | Execute `sudo setsebool -P container_use_devices 1` ou verifique o `sudo journalctl --no-pager -xeu setroubleshootd` |
-| **Build do ArduPilot falha** | Submodules do git não baixados | Delete `ardupilot-sitl/src/` e execute `make build-ardupilot` novamente |
-| **GCS não conecta na porta 5760** | Pod não está rodando ou firewall bloqueando | Verifique com `podman pod ps` e `ss -tlnp \| grep 5762` |
-
-### Ver logs dos contêineres
-
-```bash
-# Logs do Gazebo
-podman logs drone-sim-gazebo-harmonic
-
-# Logs do ArduPilot
-podman logs drone-sim-ardupilot-sitl
-
-# Acessar um contêiner interativamente
-podman exec -ti drone-sim-gazebo-harmonic bash
-podman exec -ti drone-sim-ardupilot-sitl bash
-```
+> O primeiro _build_ pode levar **30 minutos ou mais**, pois compila o ArduPilot, baixa o toolchain ARM e _builda_ o plugin do Gazebo. _Builds_ seguintes utilizam cache do Podman e são muito mais rápidas.

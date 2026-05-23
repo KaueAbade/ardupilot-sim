@@ -20,7 +20,7 @@ run:
 	@echo "Usando USER_UID=${USER_UID}, DISPLAY=$(DISPLAY), XAUTHORITY=$(XAUTHORITY) e PWD=$(PWD)"
 	@xhost +local: > /dev/null
 	@USER_UID=${USER_UID} DISPLAY="$(DISPLAY)" XAUTHORITY="$(XAUTHORITY)" PWD="$(PWD)" envsubst < drone_sim.yaml | podman kube play --replace -
-	@podman exec drone-sim-gazebo-harmonic bash -c \
+	@podman exec ardupilot-sim-gazebo-harmonic bash -c \
       'until gz topic -l 2>/dev/null | grep -qi streaming; do sleep 1; done; \
        gz topic -t $$(gz topic -l | grep -i "streaming") -m gz.msgs.Boolean -p "data: 1"'
 
@@ -41,11 +41,11 @@ build: build-gazebo build-ardupilot
 	@echo "Todos os contêineres foram gerados com sucesso!"
 
 build-gazebo:
-	@podman build -t ghcr.io/falcon-ifsp/drone-sim/gazebo-harmonic-ardupilot:latest gazebo-harmonic
+	@podman build -t ghcr.io/KaueAbade/ardupilot-sim/gazebo-harmonic-ardupilot:latest gazebo-harmonic
 
 build-ardupilot:
-	@podman build ardupilot-sitl/src -t ghcr.io/falcon-ifsp/drone-sim/ardupilot:latest --build-arg USER_UID=${USER_UID} --build-arg USER_GID=${USER_GID} --build-arg SKIP_AP_GRAPHIC_ENV=${SKIP_AP_GRAPHIC_ENV}
-	@podman build -t ghcr.io/falcon-ifsp/drone-sim/ardupilot-sitl:latest ardupilot-sitl/
+	@podman build ardupilot-sitl/src -t ghcr.io/KaueAbade/ardupilot-sim/ardupilot:latest --build-arg USER_UID=${USER_UID} --build-arg USER_GID=${USER_GID} --build-arg SKIP_AP_GRAPHIC_ENV=${SKIP_AP_GRAPHIC_ENV}
+	@podman build -t ghcr.io/KaueAbade/ardupilot-sim/ardupilot-sitl:latest ardupilot-sitl/
 
 stop:
 	-podman kube down drone_sim.yaml
@@ -53,6 +53,6 @@ stop:
 	-podman kube down ardupilot-sitl/ardupilot_sitl.yaml
 	
 clean:
-	-podman rmi ghcr.io/falcon-ifsp/drone-sim/gazebo-harmonic-ardupilot:latest
-	-podman rmi ghcr.io/falcon-ifsp/drone-sim/ardupilot:latest
-	-podman rmi ghcr.io/falcon-ifsp/drone-sim/ardupilot-sitl:latest
+	-podman rmi ghcr.io/KaueAbade/ardupilot-sim/gazebo-harmonic-ardupilot:latest
+	-podman rmi ghcr.io/KaueAbade/ardupilot-sim/ardupilot:latest
+	-podman rmi ghcr.io/KaueAbade/ardupilot-sim/ardupilot-sitl:latest

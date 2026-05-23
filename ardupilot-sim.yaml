@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: drone-sim-config
+  name: ardupilot-sim-config
 data:
   DISPLAY: "${DISPLAY}"
   XAUTHORITY: "${XAUTHORITY}"
@@ -12,15 +12,15 @@ data:
 apiVersion: v1
 kind: Pod
 metadata:
-  name: drone-sim
+  name: ardupilot-sim
   labels:
-    app: drone-sim.pod
+    app: ardupilot-sim.pod
 
 spec:
   hostNetwork: true
   containers:
   - name: gazebo-harmonic
-    image: ghcr.io/falcon-ifsp/drone-sim/gazebo-harmonic-ardupilot:latest
+    image: ghcr.io/KaueAbade/ardupilot-sim/gazebo-harmonic-ardupilot:latest
     args: ["/usr/bin/gz", "sim", "-v4", "-r", "iris_runway.sdf"]
     ports:
     - containerPort: 5600
@@ -31,7 +31,7 @@ spec:
         type: spc_t
     envFrom:
     - configMapRef:
-        name: drone-sim-config
+        name: ardupilot-sim-config
     volumeMounts:
     - name: gazebo-config
       mountPath: /opt/gz_ws/config:z
@@ -49,7 +49,7 @@ spec:
       mountPath: /dev/dri
 
   - name: ardupilot-sitl
-    image: ghcr.io/falcon-ifsp/drone-sim/ardupilot-sitl:latest
+    image: ghcr.io/KaueAbade/ardupilot-sim/ardupilot-sitl:latest
     args: ["/ardupilot/Tools/autotest/sim_vehicle.py", "-v", "ArduCopter", "-f", "gazebo-iris",
        "--model", "JSON", "--add-param-file=/opt/gz_ws/config/gazebo-iris-gimbal.parm",
        "--console", "--no-rebuild"]
@@ -68,7 +68,7 @@ spec:
         type: spc_t
     envFrom:
     - configMapRef:
-        name: drone-sim-config
+        name: ardupilot-sim-config
     volumeMounts:
     - name: gazebo-config
       mountPath: /opt/gz_ws/config:z
